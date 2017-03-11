@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<h1>Hi  {{ login }}! </h1>
+
+<p>
+    {{ guess }}
+    {{ fail }}
+    <br>
+</p>
+
+Looks like you have {{ num }} crashes pending.<br>
+Crash will disappear just after you guess it.<br>
+<p>
+    {{ tries }}
+</p>
+
+
+<form action="/guessortry" method="post">
+                <p>Try to guess a match  - here comes someone's username:</p>
+                <input type="text" name="crash"></input><p>
+                <input type="submit" value="Go!"></input>
+</form>
+
+
+<p>
+<hr>
+<a href="/logout">log me out, please!</a>
+
+
+</body>
+</html>
