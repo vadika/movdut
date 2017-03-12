@@ -82,7 +82,7 @@ def process():
 
 @app.route('/guessortry', methods=['POST'])
 def makeguess():
-    guess = fail = ""
+    guessorfail = ""
 
     if 'login' in session:
         login = session['login']
@@ -91,22 +91,18 @@ def makeguess():
         if len(crash) > 0:
 
             if crash_tries(login, 1) > 0:
-                tries = "Yon have " + str(crash_tries(login)) + "tries left."
-
                 if crash_check(login, crash):
-                    guess = "Yooohoo! You've guessed! It's " + crash + "!"
+                    guessorfail="Yooohoo! You've guessed! It's " + crash + "!"
                 else:
-                    fail = "Not this time, but we'll let " + crash + " know about your passion."
+                    guessorfail="Not this time, but we'll let " + crash + " know about your passion."
                     crash_add(login, crash)
-            else:
-                tries = "You have no tries left :(, try again in a week..."
-        else:
-            if crash_tries(login) > 0:
-                tries = "Yon have " + str(crash_tries(login)) + "tries left."
-            else:
-                tries = "You have no tries left :(, try again in a week..."
 
-        return render_template("main.html", login=login, num=crash_num(login), guess=guess, fail=fail, tries=tries)
+        if crash_tries(login) > 0:
+            tries = "Yon have " + str(crash_tries(login)) + " tries left."
+        else:
+            tries = "You have no tries left :(, try again in a couple of days"
+
+        return render_template("main.html", login=login, num=crash_num(login), guess=guessorfail, tries=tries)
     else:
         return render_template('login.html')
 
