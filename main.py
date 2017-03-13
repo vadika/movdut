@@ -8,7 +8,7 @@ import redis
 app = Flask(__name__)
 app.secret_key = "#d\xe9X\x00\xbe~Uq\x1fs\t\xb4\x99\xa3\x87\xe6.\xd1_\xebX\xae\x81'"
 r = redis.StrictRedis()
-ttl = 60
+ttl = 60*60*24*2
 ntries = 5
 
 
@@ -92,13 +92,13 @@ def makeguess():
 
             if crash_tries(login, 1) > 0:
                 if crash_check(login, crash):
-                    guessorfail="Yooohoo! You've guessed! It's " + crash + "!"
+                    guessorfail = "Yooohoo! You've guessed! It's " + crash + "!"
                 else:
-                    guessorfail="Not this time, but we'll let " + crash + " know about your passion."
+                    guessorfail = "Not this time, but we'll let " + crash + " know about your passion."
                     crash_add(login, crash)
 
         if crash_tries(login) > 0:
-            tries = "Yon have " + str(crash_tries(login)) + " tries left."
+            tries = "You have " + str(crash_tries(login)) + " tries left."
         else:
             tries = "You have no tries left :(, try again in a couple of days"
 
