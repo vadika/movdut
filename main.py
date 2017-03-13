@@ -62,6 +62,9 @@ def crash_check(login, crash):
 
 
 def crash_add(login, crash):
+    for i in r.lrange(crash,0, -1):
+        if str(calc_sha256(login)) == i.decode("utf-8"):
+            return False
     r.lpush(crash, calc_sha256(login))
     return True
 
@@ -99,13 +102,18 @@ def makeguess():
         crash = request.form['crash']
         crash = crash.strip()
         if len(crash) > 0:
-
-            if crash_tries(login, 1) > 0:
-                if crash_check(login, crash):
-                    guessorfail = "Yooohoo! You've guessed! It's " + crash + "!"
-                else:
-                    guessorfail = "Not this time, but we'll let " + crash + " know about your passion."
-                    crash_add(login, crash)
+            if mokum_check(crash):
+                if crash_tries(login) > 0:
+                    if crash_check(login, crash):
+                        guessorfail = "Yooohoo! You've guessed! It's " + crash + "!"
+                    else:
+                        if crash_add(login, crash):
+                            guessorfail = "Not this time, but we'll let " + crash + " know about your passion."
+                            crash_tries(login, 1)
+                        else:
+                            guessorfail = "You have already crushed this user!"
+            else:
+                guessorfail=crash+" doesn't exist or deleted on Mokum, so may be another try?"
 
         if crash_tries(login) > 0:
             tries = "You have " + str(crash_tries(login)) + " tries left."
