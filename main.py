@@ -34,6 +34,16 @@ def mokum_auth(apikey):
     except:
         return False
 
+def mokum_check(uname):
+    try:
+        req=urllib.request.Request("https://mokum.place/"+uname)
+        urllib.request.urlopen(req)
+        print ("user found "+uname)
+        return True
+    except:
+        print ("user not found "+uname)
+        return False
+
 
 def crash_num(login):
     try:
