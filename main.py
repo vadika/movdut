@@ -105,10 +105,11 @@ def crash_tries(login, incr=0):
         tries = ntries
         r.setex(login + "+count", ttl, tries)
 
-    if incr > 0:
-        if tries > 0:
-            tries -= 1
-            r.setex(login + "+count", ttl, tries)
+    if incr != 0:
+        tries -= incr
+        if tries < 0:
+            tries = 0
+        r.setex(login + "+count", ttl, tries)
 
     return tries
 
@@ -142,6 +143,7 @@ def makeguess():
                             guessorfail = "Not this time, but we'll let " + crash + " know about your passion."
                             mokum_message(crash, "Someone has a crush for you, check at https://movdut.0xd8.org/ :)")
                             crash_tries(login, 1)
+                            crash_tries(crash, -1)
                         else:
                             guessorfail = "You have already crushed this user!"
             else:
