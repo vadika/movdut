@@ -10,7 +10,7 @@ import yaml
 app = Flask(__name__)
 r = redis.StrictRedis()
 
-with open("config.yml", 'r') as ymlfile:
+with open("app_config.yml", 'r') as ymlfile:
     cfg = yaml.load(ymlfile)
 
 app.secret_key = cfg['app']['secretkey']
