@@ -1,0 +1,6 @@
+app:
+  secretkey:  ".................................................."
+  postapikey: xxxxxxxxxx-xxxxxxxxxxxxx-xxxxxxxxxxxxxxxxxx-xxxxxxxxxxx-xxxxxxxxxxx
+users:
+  ntries: 5
+  timeout: 100000
