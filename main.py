@@ -5,16 +5,19 @@ import urllib
 import json
 import redis
 import uuid
-
+import yaml
 
 app = Flask(__name__)
-app.secret_key = "#d\xe9X\x00\xbe~Uq\x1fs\t\xb4\x99\xa3\x87\xe6.\xd1_\xebX\xae\x81'"
 r = redis.StrictRedis()
-ttl = 60*60*24*2
-ntries = 5
 
+with open("config.yml", 'r') as ymlfile:
+    cfg = yaml.load(ymlfile)
 
-#
+app.secret_key = cfg['app']['secretkey']
+postapikey = cfg['app']['postapikey']
+ttl = cfg['users']['timeout']
+ntries = cfg['users']['ntries']
+
 
 
 def calc_sha256(block):
@@ -55,12 +58,12 @@ def mokum_message(user,message):
                           "nsfw":False},
                   "_uuid":str(uuid.uuid4())}
 
-        print (json.dumps(postdata))
+       # print (json.dumps(postdata))
 
         req = urllib.request.Request("https://mokum.place/api/v1/posts.json")
         req.add_header('Content-Type', 'application/json')
         req.add_header('Accept', 'application/json')
-        req.add_header('X-API-Token', '67248fea-2021-429c-a214-a7a67bd2a3fe')
+        req.add_header('X-API-Token', postapikey)
 
         resp = urllib.request.urlopen(req, json.dumps(postdata).encode("utf-8"))
 
@@ -131,7 +134,7 @@ def makeguess():
             if mokum_check(crash):
                 if crash_tries(login) > 0:
                     if crash_check(login, crash):
-                        mokum_message(crash,"User @"+ login + " has guessed your crush!")
+                        mokum_message(crash,"Your crush on @"+ login + " is mutal!")
                         mokum_message(login, "You have a crush with @" + crash + ". Well, good luck!")
                         guessorfail = "Yooohoo! You've guessed! It's " + crash + "!"
                     else:

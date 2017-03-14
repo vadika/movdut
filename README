@@ -1,0 +1,8 @@
+Config file config.yml should read like this:
+
+app:
+  secretkey:  ".............................."
+  postapikey: xxxxx-xxxxx-xxxxx-xxxxx-xxxxx
+users:
+  ntries: 5
+  timeout: 172800
