@@ -5,6 +5,7 @@ import urllib
 import json
 import redis
 
+
 app = Flask(__name__)
 app.secret_key = "#d\xe9X\x00\xbe~Uq\x1fs\t\xb4\x99\xa3\x87\xe6.\xd1_\xebX\xae\x81'"
 r = redis.StrictRedis()
@@ -38,11 +39,35 @@ def mokum_check(uname):
     try:
         req=urllib.request.Request("https://mokum.place/"+uname)
         urllib.request.urlopen(req)
-        print ("user found "+uname)
         return True
     except:
-        print ("user not found "+uname)
         return False
+
+
+
+
+def mokum_message(user,message):
+    try:
+        postdata={"post":{"timelines":["direct:"+user],
+                          "text":message,
+                          "comments_disabled":True,
+                          "nsfw":False},
+                  "_uuid":str(uuid.uuid4())}
+
+        print (json.dumps(postdata))
+
+        req = urllib.request.Request("https://mokum.place/api/v1/posts.json")
+        req.add_header('Content-Type', 'application/json')
+        req.add_header('Accept', 'application/json')
+        req.add_header('X-API-Token', '67248fea-2021-429c-a214-a7a67bd2a3fe')
+
+        resp = urllib.request.urlopen(req, json.dumps(postdata).encode("utf-8"))
+
+        return True
+    except Exception as e:
+        print (e)
+        return False
+
 
 
 def crash_num(login):
@@ -105,10 +130,12 @@ def makeguess():
             if mokum_check(crash):
                 if crash_tries(login) > 0:
                     if crash_check(login, crash):
+                        mokum_message(crash,"User "+ login + " has guessed your crush!")
                         guessorfail = "Yooohoo! You've guessed! It's " + crash + "!"
                     else:
                         if crash_add(login, crash):
                             guessorfail = "Not this time, but we'll let " + crash + " know about your passion."
+                            mokum_message(crash, "Someone has a crush for you, check at https://movdut.0xd8.org/ :)")
                             crash_tries(login, 1)
                         else:
                             guessorfail = "You have already crushed this user!"
