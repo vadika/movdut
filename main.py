@@ -4,6 +4,7 @@ import hashlib
 import urllib
 import json
 import redis
+import uuid
 
 
 app = Flask(__name__)
@@ -130,7 +131,8 @@ def makeguess():
             if mokum_check(crash):
                 if crash_tries(login) > 0:
                     if crash_check(login, crash):
-                        mokum_message(crash,"User "+ login + " has guessed your crush!")
+                        mokum_message(crash,"User @"+ login + " has guessed your crush!")
+                        mokum_message(login, "You have a crush with @" + crash + ". Well, good luck!")
                         guessorfail = "Yooohoo! You've guessed! It's " + crash + "!"
                     else:
                         if crash_add(login, crash):
