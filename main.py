@@ -102,31 +102,31 @@ def mokum_message(user,message):
 
 
 
-def crash_num(login):
+def crush_num(login):
     try:
         return len(r.lrange(login, 0, -1))
     except:
         return 0
 
 
-def crash_check(login, crash):
+def crush_check(login, crush):
     for i in r.lrange(login, 0, -1):
 
-        if str(calc_sha256(crash)) == i.decode("utf-8"):
+        if str(calc_sha256(crush)) == i.decode("utf-8"):
             r.lrem(login, 0, i)
             return True
     return False
 
 
-def crash_add(login, crash):
-    for i in r.lrange(crash,0, -1):
+def crush_add(login, crush):
+    for i in r.lrange(crush, 0, -1):
         if str(calc_sha256(login)) == i.decode("utf-8"):
             return False
-    r.lpush(crash, calc_sha256(login))
+    r.lpush(crush, calc_sha256(login))
     return True
 
 
-def crash_tries(login, incr=0):
+def crush_tries(login, incr=0):
     try:
         tries = int(r.get(login + "+count"))
     except:
@@ -146,7 +146,7 @@ def crash_tries(login, incr=0):
 def process():
     if 'login' in session:
         login = session['login']
-        return render_template('main.html', login=login, num=crash_num(login))
+        return render_template('main.html', login=login, num=crush_num(login))
     else:
         return render_template('login.html')
 
@@ -157,32 +157,32 @@ def makeguess():
 
     if 'login' in session:
         login = session['login']
-        crash = request.form['crash']
-        crash = crash.strip()
-        if len(crash) > 0:
-            if mokum_check(crash):
-                if crash_tries(login) > 0:
-                    if crash_check(login, crash):
-                        mokum_message(crash,"Your crush on @"+ login + " is mutal!")
-                        mokum_message(login, "You have a crush with @" + crash + ". Well, good luck!")
-                        guessorfail = "Yooohoo! You've guessed! It's " + crash + "!"
+        crush = request.form['crush']
+        crush = crush.strip()
+        if len(crush) > 0:
+            if mokum_check(crush):
+                if crush_tries(login) > 0:
+                    if crush_check(login, crush):
+                        mokum_message(crush, "Your crush on @" + login + " is mutal!")
+                        mokum_message(login, "You have a crush with @" + crush + ". Well, good luck!")
+                        guessorfail = "Yooohoo! You've guessed! It's " + crush + "!"
                     else:
-                        if crash_add(login, crash):
-                            guessorfail = "Not this time, but we'll let " + crash + " know about your passion."
-                            mokum_message(crash, "Someone has a crush for you, check at https://movdut.0xd8.org/ :)")
-                            crash_tries(login, 1)
-                            crash_tries(crash, -1)
+                        if crush_add(login, crush):
+                            guessorfail = "Not this time, but we'll let " + crush + " know about your passion."
+                            mokum_message(crush, "Someone has a crush for you, check at https://movdut.0xd8.org/ :)")
+                            crush_tries(login, 1)
+                            crush_tries(crush, -1)
                         else:
                             guessorfail = "You have already crushed this user!"
             else:
-                guessorfail=crash+" doesn't exist or deleted on Mokum, so may be another try?"
+                guessorfail= crush + " doesn't exist or deleted on Mokum, so may be another try?"
 
-        if crash_tries(login) > 0:
-            tries = "You have " + str(crash_tries(login)) + " tries left."
+        if crush_tries(login) > 0:
+            tries = "You have " + str(crush_tries(login)) + " tries left."
         else:
             tries = "You have no tries left :(, try again in a couple of days"
 
-        return render_template("main.html", login=login, num=crash_num(login), guess=guessorfail, tries=tries)
+        return render_template("main.html", login=login, num=crush_num(login), guess=guessorfail, tries=tries)
     else:
         return render_template('login.html')
 
