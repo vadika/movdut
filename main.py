@@ -125,6 +125,11 @@ def crush_add(login, crush):
     r.lpush(crush, calc_sha256(login))
     return True
 
+def crush_stat(login, crush):
+    for i in r.lrange(crush, 0, -1):
+        if str(calc_sha256(login)) == i.decode("utf-8"):
+            return True
+    return False
 
 def crush_tries(login, incr=0):
     try:
@@ -172,7 +177,14 @@ def makeguess():
         crush = request.form['crush']
         crush = crush.strip()
         if len(crush) > 0:
-            if mokum_check(crush):
+            if (request.form['submit']=='Check!'):
+                print ("check")
+                if(crush_stat(login, crush)):
+                    guessorfail="You have already sent your crush to @"+crush+" ."
+                else:
+                    guessorfail="We don't see any crushes to @" + crush + " ,  so do make a try!"
+
+            elif mokum_check(crush):
                 if crush_tries(login) > 0:
                     if crush_check(login, crush):
                         mokum_message(crush, "Your crush on @" + login + " is mutal!")
