@@ -141,12 +141,24 @@ def crush_tries(login, incr=0):
 
     return tries
 
+def crush_mutual(login):
+    return "here comes mutual crushes"
+
+def crush_sent(login):
+    return "here comes sent crushes"
+
 
 @app.route('/')
 def process():
     if 'login' in session:
         login = session['login']
-        return render_template('main.html', login=login, num=crush_num(login))
+
+        if crush_tries(login) > 0:
+            tries = "You have " + str(crush_tries(login)) + " tries left."
+        else:
+            tries = "You have no tries left :(, try again in a couple of days"
+
+        return render_template('main.html', login=login, num=crush_num(login), guess="", tries=tries, mutual=crush_mutual(login), sent=crush_sent(login))
     else:
         return render_template('login.html')
 
@@ -182,7 +194,7 @@ def makeguess():
         else:
             tries = "You have no tries left :(, try again in a couple of days"
 
-        return render_template("main.html", login=login, num=crush_num(login), guess=guessorfail, tries=tries)
+        return render_template("main.html", login=login, num=crush_num(login), guess=guessorfail, tries=tries, mutual=crush_mutual(login), sent=crush_sent(login))
     else:
         return render_template('login.html')
 
