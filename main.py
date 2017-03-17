@@ -6,6 +6,11 @@ import json
 import redis
 import uuid
 import yaml
+from Crypto import Random
+from Crypto.Cipher import AES
+import base64
+
+
 
 app = Flask(__name__)
 r = redis.StrictRedis()
@@ -19,11 +24,34 @@ ttl = cfg['users']['timeout']
 ntries = cfg['users']['ntries']
 
 
+# Some crypto staff
+
+BLOCK_SIZE=16
+
+def trans(key):
+     return hashlib.md5(key.encode("utf-8")).digest()
+
+def encrypt(message, passphrase):
+    passphrase = trans(passphrase)
+    IV = Random.new().read(BLOCK_SIZE)
+    aes = AES.new(passphrase, AES.MODE_CFB, IV)
+    return base64.b64encode(IV + aes.encrypt(message)).decode("utf-8")
+
+def decrypt(encrypted, passphrase):
+    passphrase = trans(passphrase)
+    encrypted = base64.b64decode(encrypted)
+    IV = encrypted[:BLOCK_SIZE]
+    aes = AES.new(passphrase, AES.MODE_CFB, IV)
+    return aes.decrypt(encrypted[BLOCK_SIZE:]).decode("utf-8")
+
+
 
 def calc_sha256(block):
     sha256 = hashlib.sha256()
     sha256.update(block.encode("utf-8"))
     return sha256.hexdigest()
+
+
 
 
 def mokum_auth(apikey):
