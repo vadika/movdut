@@ -7,40 +7,41 @@
 
 {% block content %}
     <div class="container">
-        <h1> Speak, friend, and enter!</h1>
-        <br></br>
-        <br> it's somewhat like Tinder.
-        <br> a) you share this with all your friends here on Mokum;
-        <br> b) you enter into the form the usernames of some of them you won't mind getting intimate with;
-        <br> c) your friends do b) as well;
-        <br> d) if there's a match - you both get notified, and, well, can meet and know each other a bit better.
-        <br> You can also subscribe to @barankas to get notifications from the service as direct messages.
-        <br>
-    </div>
-    <div class="container">
-        <p>
-            <img src="static/apikey.png">
-        </p>
-        <form action="/signup" method="post">
-            <table>
-                <tr>
-                    <td>Auth via <a href="https://mokum.place/settings/apitokens">Mokum.place API token</a>:</td>
-                    <td>
-                        <input type="password" name="apikey"></input></td>
-                </tr>
-                <tr>
-                    <td></td>
-                    <td><input type="submit" value="Sign in"></input></td>
-                </tr>
-            </table>
+        <div class="row">
+            <h1> Speak, friend, and enter!</h1>
+            <br>
+            <pre>
+                It's somewhat like Tinder.
+                a) you share this with  all your friends here on <a href="https://mokum.place">Mokum</a>;
+                b) you enter into the form the usernames of some of them you won't mind getting intimate with;
+                c) your friends do b) as well;
+                d) if there's a match - you both get notified, and, well, can meet and know each other a bit better
+                    You can also subscribe to <a href="https://mokum.place/barankas">@barankas</a> to get notifications from the service as direct messages.
+                </pre>
+        </div>
 
-        </form>
-    </div>
-    <div class="container">
-        <hr>
-        Nothing is stored anywhere, everything else is hashed with SHA256.<br>
-        No warranties of course!<br>
-        (c) vadikas <br>
-
+        <div class="row">
+            <div class="col-md-6">
+                <form action="/signup" method="post">
+                    <div class="form-group">
+                        <label for="inputAPI">
+                            Auth via <a href="https://mokum.place/settings/apitokens">Mokum.place API token</a>
+                        </label>
+                        <input type="password" name="apikey" class="form-control" id="inputAPI"></input>
+                        <button type="submit" class="btn btn-default">Sign in</button>
+                    </div>
+                </form>
+            </div>
+            <div class="col-md-6">
+                <img src="static/apikey.png" class="img-rounded">
+            </div>
+        </div>
+        <div class="row">
+        <pre>
+        Nothing is stored anywhere, everything else is hashed with SHA256.
+        No warranties of any kind!
+        (c) <a href="https://mokum.place/vadikas">@vadikas</a>
+        </pre>
+        </div>
     </div>
 {% endblock %}
