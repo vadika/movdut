@@ -1,10 +1,7 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+{% extends "bootstrap/base.html" %}
+
+{% block content %}
+
 <h1>Hi  {{ login }}! </h1>
 
 <p>
@@ -50,5 +47,4 @@ Subscribe to <a href="https://mokum.place/barankas">@barankas</a>, this is offic
 <a href="/logout">log me out, please!</a>
 
 
-</body>
-</html>
+{% endblock %}

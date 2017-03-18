@@ -1,10 +1,6 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+{% extends "bootstrap/base.html" %}
+
+{% block content %}
 <h1>  Speak, friend, and enter!</h1>
   <p>
      <img src="static/apikey.png" >
@@ -24,5 +20,5 @@
 Nothing is stored anywhere, everything else is hashed with SHA256.<br>
 No warranties of course!<br>
 (c) vadikas <br>
-</body>
-</html>
+
+{% endblock %}

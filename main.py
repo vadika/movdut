@@ -1,5 +1,6 @@
 from flask import Flask
 from flask import request, redirect, session, render_template
+from flask_bootstrap import Bootstrap
 import hashlib
 import urllib
 import json
@@ -11,6 +12,7 @@ from Crypto.Cipher import AES
 import base64
 
 app = Flask(__name__)
+Bootstrap(app)
 r = redis.StrictRedis()
 
 with open("app_config.yml", 'r') as ymlfile:
