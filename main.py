@@ -144,9 +144,10 @@ def crush_deltry(login, crush):
     try:
         for i in r.lrange(login + "+tries", 0, -1):
             if decrypt(i, login) == crush:
-                r.lpop(login + "+tries", i)
+                r.lrem(login + "+tries", 0, i)
                 return True
-    except:
+    except Exception as e:
+        print (e)
         return False
 
     return False
@@ -167,7 +168,7 @@ def crush_delmutual(login, crush):
     try:
         for i in r.lrange(login + "+mutual", 0, -1):
             if decrypt(i, login) == crush:
-                r.lpop(login + "+mutual", i)
+                r.lrem(login + "+mutual", 0, i)
                 return True
     except:
         return False
@@ -184,10 +185,10 @@ def crush_ismutal(login,crush):
     return False
 
 def crush_mutual(login):
-    mutualcrushes = "Your mutal crushes: "
+    mutualcrushes = "Your mutal crushes are with "
     try:
         for i in r.lrange(login + "+mutual", 0, -1):
-            mutualcrushes += "@" + decrypt(i, login) + ", "
+            mutualcrushes += "@" + decrypt(i, login) + " "
         mutualcrushes += "."
     except:
         mutualcrushes = "No mutal cruses yet :("
@@ -195,13 +196,13 @@ def crush_mutual(login):
 
 
 def crush_sent(login):
-    sentcrushes = "You have send crushes to: "
+    sentcrushes = "You have sent crushes to  "
     try:
-        for i in r.lrange(login + "+mutual", 0, -1):
-            sentcrushes += "@" + decrypt(i, login) + ", "
+        for i in r.lrange(login + "+tries", 0, -1):
+            sentcrushes += "@" + decrypt(i, login) + " "
         sentcrushes += "."
     except:
-        sentcrushes = "You don't send crushes to anyone :("
+        sentcrushes = "You haven't sent crushes to anyone :("
     return sentcrushes
 
 
@@ -251,7 +252,7 @@ def makeguess():
                 if (crush_stat(login, crush)):
                     guessorfail = "You have already sent your crush to @" + crush + " ."
                     crush_addtry(login, crush)
-                elif crush_ismutual(login, crush):
+                elif crush_ismutal(login, crush):
                     guessorfail = "You already have a mutual crush with @" + crush + " , why are you checking? :)"
                 else:
                     guessorfail = "We don't see any crushes to @" + crush + " ,  so do make a try!"
