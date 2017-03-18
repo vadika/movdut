@@ -1,24 +1,46 @@
 {% extends "bootstrap/base.html" %}
 
+{% block navbar %}
+    <div class="navbar navbar-fixed-top">
+    </div>
+{% endblock %}
+
 {% block content %}
-<h1>  Speak, friend, and enter!</h1>
-  <p>
-     <img src="static/apikey.png" >
-     </p>
- <form action="/signup" method="post">
+    <div class="container">
+        <h1> Speak, friend, and enter!</h1>
+        <br></br>
+        <br> it's somewhat like Tinder.
+        <br> a) you share this with all your friends here on Mokum;
+        <br> b) you enter into the form the usernames of some of them you won't mind getting intimate with;
+        <br> c) your friends do b) as well;
+        <br> d) if there's a match - you both get notified, and, well, can meet and know each other a bit better.
+        <br> You can also subscribe to @barankas to get notifications from the service as direct messages.
+        <br>
+    </div>
+    <div class="container">
+        <p>
+            <img src="static/apikey.png">
+        </p>
+        <form action="/signup" method="post">
             <table>
                 <tr>
-                    <td>Auth via <a href="https://mokum.place/settings/apitokens">Mokum.place API token</a>:</td><td>
-        <input type="password" name="apikey"></input></td></tr>
-            <tr>
-        <td></td><td><input type="submit" value="Sign in"></input></td>
-            </tr>
+                    <td>Auth via <a href="https://mokum.place/settings/apitokens">Mokum.place API token</a>:</td>
+                    <td>
+                        <input type="password" name="apikey"></input></td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td><input type="submit" value="Sign in"></input></td>
+                </tr>
             </table>
 
- </form>
-<hr>
-Nothing is stored anywhere, everything else is hashed with SHA256.<br>
-No warranties of course!<br>
-(c) vadikas <br>
+        </form>
+    </div>
+    <div class="container">
+        <hr>
+        Nothing is stored anywhere, everything else is hashed with SHA256.<br>
+        No warranties of course!<br>
+        (c) vadikas <br>
 
+    </div>
 {% endblock %}

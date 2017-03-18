@@ -1,50 +1,58 @@
 {% extends "bootstrap/base.html" %}
 
+{% block navbar %}
+    <div class="navbar navbar-fixed-top">
+        <!-- ... -->
+    </div>
+{% endblock %}
+
 {% block content %}
+    <div class="container">
+        <h1>Hi {{ login }}! </h1>
 
-<h1>Hi  {{ login }}! </h1>
+        <p>
+            {{ guess }}
+            <br>
+        </p>
 
-<p>
-    {{ guess }}
-    <br>
-</p>
+        <p>
+            {{ mutual }}
+            <br>
+        </p>
 
-<p>
-    {{ mutual }}
-    <br>
-</p>
+        <p>
+            {{ sent }}
+            <br>
+        </p>
 
-<p>
-    {{ sent }}
-    <br>
-</p>
-
-Looks like you have {{ num }} crushes pending.<br>
-Crush will disappear just after you guess it.<br>
-<p>
-    {{ tries }}
-</p>
-
-
-<form action="/guessortry" method="post">
-                <p>Make a guess  - someone's username comes in this little box:</p>
-                <input type="text" name="crush"></input><p>
-                <input type="submit" name="submit" value="Go!"></input><p>
+        Looks like you have {{ num }} crushes pending.<br>
+        Crush will disappear just after you guess it.<br>
+        <p>
+            {{ tries }}
+        </p>
 
 
+        <form action="/guessortry" method="post">
+            <p>Make a guess - someone's username comes in this little box:</p>
+            <input type="text" name="crush"></input>
+            <p>
+                <input type="submit" name="submit" value="Go!"></input>
+            <p>
 
 
-If you want to check if you have sent crush to the user, try the "Check!" button below...<p>
-                <input type="submit" name="submit" value="Check!"></input><p>
-</form>
+                If you want to check if you have sent crush to the user, try the "Check!" button below...
+            <p>
+                <input type="submit" name="submit" value="Check!"></input>
+            <p>
+        </form>
 
-<p>
-If you want to get notifications when somebody send you a crush, or you have a match --<br>
-Subscribe to <a href="https://mokum.place/barankas">@barankas</a>, this is official movdut maskot.
-<p>
+        <p>
+            If you want to get notifications when somebody send you a crush, or you have a match --<br>
+            Subscribe to <a href="https://mokum.place/barankas">@barankas</a>, this is official movdut maskot.
+        <p>
 
-<hr>
-<a href="/logout">log me out, please!</a>
+        <hr>
+        <a href="/logout">log me out, please!</a>
 
-
+    </div>
 {% endblock %}
