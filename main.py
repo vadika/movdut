@@ -1,5 +1,5 @@
 from flask import Flask
-from flask import request, redirect, session, render_template
+from flask import request, redirect, session, render_template, flash
 from flask_bootstrap import Bootstrap
 import hashlib
 import urllib
@@ -186,25 +186,31 @@ def crush_ismutal(login,crush):
         return False
     return False
 
+# TODO:
+# Nm, [18.03.17 16:42]
+# Your mutal crushes are with .
+# наверное, не надо эту строку показывать, если нет mutual crushes (и опечатка, btw)
+# и с You have sent crushes to . то же самое
+# или You haven't sent any
+
+
 def crush_mutual(login):
-    mutualcrushes = "Your mutal crushes are with "
+    mutualcrushes = []
     try:
         for i in r.lrange(login + "+mutual", 0, -1):
-            mutualcrushes += "@" + decrypt(i, login) + " "
-        mutualcrushes += "."
+            mutualcrushes.append("@" + decrypt(i, login) + " ")
     except:
-        mutualcrushes = "No mutal cruses yet :("
+        mutualcrushes = ["No one yet"]
     return mutualcrushes
 
 
 def crush_sent(login):
-    sentcrushes = "You have sent crushes to  "
+    sentcrushes = []
     try:
         for i in r.lrange(login + "+tries", 0, -1):
-            sentcrushes += "@" + decrypt(i, login) + " "
-        sentcrushes += "."
+            sentcrushes.append( "@" + decrypt(i, login) + " ")
     except:
-        sentcrushes = "You haven't sent crushes to anyone :("
+        sentcrushes = ["no one :("]
     return sentcrushes
 
 
@@ -229,10 +235,7 @@ def process():
     if 'login' in session:
         login = session['login']
 
-        if crush_tries(login) > 0:
-            tries = "You have " + str(crush_tries(login)) + " tries left."
-        else:
-            tries = "You have no tries left :(, try again in a couple of days"
+        tries = crush_tries(login)
 
         return render_template('main.html', login=login, num=crush_num(login), guess="", tries=tries,
                                mutual=crush_mutual(login), sent=crush_sent(login))
@@ -281,14 +284,14 @@ def makeguess():
             else:
                 guessorfail = crush + " doesn't exist or deleted on Mokum, so may be another try?"
 
-        if crush_tries(login) > 0:
-            tries = "You have " + str(crush_tries(login)) + " tries left."
-        else:
-            tries = "You have no tries left :(, try again in a couple of days"
 
+        tries=crush_tries(login)
+
+        flash(guessorfail)
         return render_template("main.html", login=login, num=crush_num(login), guess=guessorfail, tries=tries,
                                mutual=crush_mutual(login), sent=crush_sent(login))
     else:
+        flash(guessorfail)
         return render_template('login.html')
 
 
