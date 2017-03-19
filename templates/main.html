@@ -50,7 +50,7 @@
         </div>
         <div class="col-md-4">
             <p>
-                Your mutual crushes are:
+                <strong>Your mutual crushes are:</strong>
                 <ul class="list-unstyled">
                 {% for mutualnames in mutual %}
                 <li>{{ mutualnames }}</li>
@@ -59,7 +59,7 @@
             </p>
 
             <p>
-            You sent crushes to:
+                <strong>You sent crushes to:</strong>
                 <ul class="list-unstyled">
                 {%  for sentnames in sent %}
                 <li>{{ sentnames }}</li>
@@ -69,22 +69,22 @@
 
             <p>
                 {% if tries >0 %}
-                    You have <h3>{{ tries }}</h3> tries.
+                    <strong>You have <h3><mark>{{ tries }}</mark></h3> tries.</strong>
                 {% else %}
-                    You have no tries left :(, try again in a couple of days.
+                    <strong>You have no tries left :(, try again in a couple of days.</strong>
                 {% endif %}
             </p>
 
             <p>
-            You have <h2>{{ num }}</h2> crushes to guess.
+                <strong>You have <h3><mark>{{ num }}</mark></h3> crushes to guess.</strong>
             </p>
 
         </div>
         <div class="row">
             <div class="col-md-8">
                 <p>
-                    If you want to get notifications when somebody send you a crush, or you have a match --
-                    subscribe to <a href="https://mokum.place/barankas">@barankas</a>, this is official movdut masсot.
+                    <small>If you want to get notifications when somebody send you a crush, or you have a match --
+                        subscribe to <a href="https://mokum.place/barankas">@barankas</a>, this is official movdut masсot.</small>
                 </p>
             </div>
         </div>
