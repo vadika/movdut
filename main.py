@@ -185,13 +185,13 @@ def crush_ismutal(login,crush):
     return False
 
 def crush_mutual(login):
-    mutualcrushes = "Your mutal crushes are with "
+    mutualcrushes = "You have mutual crushes with "
     try:
         for i in r.lrange(login + "+mutual", 0, -1):
             mutualcrushes += "@" + decrypt(i, login) + " "
         mutualcrushes += "."
     except:
-        mutualcrushes = "No mutal cruses yet :("
+        mutualcrushes = "No mutual crushes yet :("
     return mutualcrushes
 
 
@@ -230,7 +230,7 @@ def process():
         if crush_tries(login) > 0:
             tries = "You have " + str(crush_tries(login)) + " tries left."
         else:
-            tries = "You have no tries left :(, try again in a couple of days"
+            tries = "You have no tries left :(, come back in a couple days"
 
         return render_template('main.html', login=login, num=crush_num(login), guess="", tries=tries,
                                mutual=crush_mutual(login), sent=crush_sent(login))
@@ -255,7 +255,7 @@ def makeguess():
                 elif crush_ismutal(login, crush):
                     guessorfail = "You already have a mutual crush with @" + crush + " , why are you checking? :)"
                 else:
-                    guessorfail = "We don't see any crushes to @" + crush + " ,  so do make a try!"
+                    guessorfail = "You haven't sent crushes to @" + crush + " ,  so do make a try!"
 
             elif mokum_check(crush):
                 if crush_tries(login) > 0:
@@ -263,26 +263,26 @@ def makeguess():
                         crush_deltry(login, crush)
                         crush_addmutual(login, crush)
                         crush_addmutual(crush,login)
-                        mokum_message(crush, "Your crush on @" + login + " is mutal!")
-                        mokum_message(login, "You have a crush with @" + crush + ". Well, good luck!")
+                        mokum_message(crush, "Your crush with @" + login + " is mutual!")
+                        mokum_message(login, "You have a crush with @" + crush + ". Have a good time!")
                         guessorfail = "Yooohoo! You've guessed! It's " + crush + "!"
                     else:
                         if crush_add(login, crush):
                             crush_addtry(login, crush)
-                            guessorfail = "Not this time, but we'll let " + crush + " know about your passion."
-                            mokum_message(crush, "Someone has a crush for you, check at https://movdut.0xd8.org/ :)")
+                            guessorfail = "Not for now, but we'll let " + crush + " know that someone has a crush on them."
+                            mokum_message(crush, "Someone has a crush on you, check at https://movdut.0xd8.org/ :)")
                             crush_tries(login, 1)
                             crush_tries(crush, -1)
                         else:
-                            guessorfail = "You have already crushed this user!"
+                            guessorfail = "You already have a crush on this user!"
                             crush_addtry(login, crush)
             else:
-                guessorfail = crush + " doesn't exist or deleted on Mokum, so may be another try?"
+                guessorfail = crush + " doesn't exist on Mokum (maybe they're deleted), try someone else!"
 
         if crush_tries(login) > 0:
             tries = "You have " + str(crush_tries(login)) + " tries left."
         else:
-            tries = "You have no tries left :(, try again in a couple of days"
+            tries = "You have no tries left :(, come back in a couple days"
 
         return render_template("main.html", login=login, num=crush_num(login), guess=guessorfail, tries=tries,
                                mutual=crush_mutual(login), sent=crush_sent(login))
