@@ -282,16 +282,16 @@ def makeguess():
                             guessorfail = "You already have a crush on this user!"
                             crush_addtry(login, crush)
             else:
-                guessorfail = crush + " doesn't exist on Mokum (may be  deleted&) , try someone else!"
+                guessorfail = crush + " doesn't exist on Mokum (may be  deleted?) , try someone else!"
 
 
         tries=crush_tries(login)
 
-        flash(guessorfail)
+        if len(guessorfail)>0:
+            flash(guessorfail)
         return render_template("main.html", login=login, num=crush_num(login), guess=guessorfail, tries=tries,
                                mutual=crush_mutual(login), sent=crush_sent(login))
     else:
-        flash(guessorfail)
         return render_template('login.html')
 
 
