@@ -260,7 +260,7 @@ def makeguess():
                 elif crush_ismutal(login, crush):
                     guessorfail = "You already have a mutual crush with @" + crush + " , why are you checking? :)"
                 else:
-                    guessorfail = "We don't see any crushes to @" + crush + " ,  so do make a try!"
+                    guessorfail = "You haven't sent any crushes to @" + crush + " ,  so do make a try!"
 
             elif mokum_check(crush):
                 if crush_tries(login) > 0:
@@ -268,21 +268,21 @@ def makeguess():
                         crush_deltry(login, crush)
                         crush_addmutual(login, crush)
                         crush_addmutual(crush,login)
-                        mokum_message(crush, "Your crush on @" + login + " is mutal!")
-                        mokum_message(login, "You have a crush with @" + crush + ". Well, good luck!")
+                        mokum_message(crush, "Your crush with @" + login + " is mutual!")
+                        mokum_message(login, "You have a crush with @" + crush + ". Have a good time!")
                         guessorfail = "Yooohoo! You've guessed! It's " + crush + "!"
                     else:
                         if crush_add(login, crush):
                             crush_addtry(login, crush)
-                            guessorfail = "Not this time, but we'll let " + crush + " know about your passion."
-                            mokum_message(crush, "Someone has a crush for you, check at https://movdut.0xd8.org/ :)")
+                            guessorfail = "Not for now, but we'll let " + crush + " know that someone has a crush on them."
+                            mokum_message(crush, "Someone has a crush on you, check at https://movdut.0xd8.org/ :)")
                             crush_tries(login, 1)
                             crush_tries(crush, -1)
                         else:
-                            guessorfail = "You have already crushed this user!"
+                            guessorfail = "You already have a crush on this user!"
                             crush_addtry(login, crush)
             else:
-                guessorfail = crush + " doesn't exist or deleted on Mokum, so may be another try?"
+                guessorfail = crush + " doesn't exist on Mokum (may be  deleted&) , try someone else!"
 
 
         tries=crush_tries(login)

@@ -1,5 +1,7 @@
 {% extends "bootstrap/base.html" %}
-
+{% import "bootstrap/wtf.html" as wtf %}
+{% import "bootstrap/fixes.html" as fixes %}
+{% import "bootstrap/utils.html" as util %}
 
 
 {% block navbar %}
@@ -10,81 +12,79 @@
 
 {% block content %}
 
-    {% with messages = get_flashed_messages(with_categories=true) %}
-        {% if messages %}
-            <div class="alert alert-{{ messages.0.0 }}" role="alert">
-                {% for category, message in messages %}
-                    {{ message }} </br>
-                {% endfor %}
-            </div>
-        {% endif %}
-    {% endwith %}
+    {{ util.flashed_messages(dismissible=True) }}
 
 
     <div class="container">
         <div class="col-md-8">
             <h3>Hi {{ login }}! </h3>
 
-            <p>
-                {{ guess }}
-                <br>
-            </p>
-
-
-
-
 
             <form action="/guessortry" method="post">
-                <p>Make a guess - someone's username comes in this little box:</p>
-                <input type="text" name="crush"></input>
-                <p>
-                    <input type="submit" name="submit" value="Go!"></input>
-                <p>
-
-
-                    If you want to check if you have sent crush to the user, try the "Check!" button below...
-                <p>
-                    <input type="submit" name="submit" value="Check!"></input>
-                <p>
+                <div class="form-group">
+                    <label for="inputbox">
+                        <p>Make a guess - put someone's username comes in the box below.<br>
+                            If you want to check if you have sent crush to the user, press the "Check!" button.
+                        </p>
+                    </label>
+                    <p>
+                    <p><input type="text" name="crush" class="form-control" id="inputbox"></p>
+                    <p><button type="submit" name="submit" value="Go!" class="btn btn-primary ">Go!</button>
+                    <button type="submit" name="submit" value="Check!" class="btn btn-primary ">Check!</button>
+                    </p>
+                </div>
             </form>
         </div>
         <div class="col-md-4">
             <p>
-                <strong>Your mutual crushes are:</strong>
-                <ul class="list-unstyled">
+                <strong>Your have mutual crushes with:</strong>
+            <ul class="list-unstyled">
                 {% for mutualnames in mutual %}
-                <li>{{ mutualnames }}</li>
+                    <li>{{ mutualnames }}</li>
                 {% endfor %}
-                </ul>
+            </ul>
             </p>
 
             <p>
                 <strong>You sent crushes to:</strong>
-                <ul class="list-unstyled">
-                {%  for sentnames in sent %}
-                <li>{{ sentnames }}</li>
+            <ul class="list-unstyled">
+                {% for sentnames in sent %}
+                    <li>{{ sentnames }}</li>
                 {% endfor %}
-                </ul>
+            </ul>
             </p>
-
-            <p>
-                {% if tries >0 %}
-                    <strong>You have <h3><mark>{{ tries }}</mark></h3> tries.</strong>
-                {% else %}
-                    <strong>You have no tries left :(, try again in a couple of days.</strong>
-                {% endif %}
-            </p>
-
-            <p>
-                <strong>You have <h3><mark>{{ num }}</mark></h3> crushes to guess.</strong>
-            </p>
-
+        </div>
+        <div class="row">
+            <div class="col-md-4">
+                <p>
+                    {% if tries >0 %}
+                        <strong>You have
+                            <h3>
+                                <mark>{{ tries }}</mark>
+                            </h3>
+                            tries.</strong>
+                    {% else %}
+                        <strong>You have no tries left :(, come back in a couple  days.</strong>
+                    {% endif %}
+                </p>
+            </div>
+            <div class="col-md-4">
+                <p>
+                    <strong>You have
+                        <h3>
+                            <mark>{{ num }}</mark>
+                        </h3>
+                        crushes to guess.</strong>
+                </p>
+            </div>
         </div>
         <div class="row">
             <div class="col-md-8">
                 <p>
                     <small>If you want to get notifications when somebody send you a crush, or you have a match --
-                        subscribe to <a href="https://mokum.place/barankas">@barankas</a>, this is official movdut masсot.</small>
+                        subscribe to <a href="https://mokum.place/barankas">@barankas</a>, this is official movdut
+                        masсot.
+                    </small>
                 </p>
             </div>
         </div>
@@ -95,4 +95,9 @@
             </div>
         </div>
     </div>
+{% endblock %}
+
+{% block head %}
+    {{ super() }}
+    {{ fixes.ie8() }}
 {% endblock %}
