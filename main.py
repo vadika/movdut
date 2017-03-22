@@ -264,12 +264,12 @@ def makeguess():
     guessorfail = ""
 
     if 'login' in session:
-        login = session['login']
+        login = str(session['login']).lower()
         crush = request.form['crush']
         crush = crush.strip()
         if len(crush) > 0:
             if (request.form['submit'] == 'Check!'):
-                print("check")
+                #print("check")
                 if (crush_stat(login, crush)):
                     guessorfail = "You have already sent your crush to @" + crush + " ."
                     crush_addtry(login, crush)
