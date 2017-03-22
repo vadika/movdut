@@ -22,6 +22,7 @@ app.secret_key = cfg['app']['secretkey']
 postapikey = cfg['app']['postapikey']
 ttl = cfg['users']['timeout']
 ntries = cfg['users']['ntries']
+nattempts = cfg['users']['nattempts']
 
 # Some crypto staff
 
@@ -137,7 +138,7 @@ def crush_addtry(login, crush):
                 return True
         r.lpush(login + "+tries", encrypt(crush, login))
     except Exception as e:
-        print (e)
+        print(e)
         r.lpush(login + "+tries", encrypt(crush, login))
     return True
 
@@ -149,7 +150,7 @@ def crush_deltry(login, crush):
                 r.lrem(login + "+tries", 0, i)
                 return True
     except Exception as e:
-        print (e)
+        print(e)
         return False
 
     return False
@@ -177,7 +178,8 @@ def crush_delmutual(login, crush):
 
     return False
 
-def crush_ismutal(login,crush):
+
+def crush_ismutal(login, crush):
     try:
         for i in r.lrange(login + "+mutual", 0, -1):
             if decrypt(i, login) == crush:
@@ -185,6 +187,7 @@ def crush_ismutal(login,crush):
     except:
         return False
     return False
+
 
 # TODO:
 # Nm, [18.03.17 16:42]
@@ -208,17 +211,30 @@ def crush_sent(login):
     sentcrushes = []
     try:
         for i in r.lrange(login + "+tries", 0, -1):
-            sentcrushes.append( "@" + decrypt(i, login) + " ")
+            sentcrushes.append("@" + decrypt(i, login) + " ")
     except:
         sentcrushes = ["no one :("]
     return sentcrushes
 
 
 def crush_tries(login, incr=0):
+    # init attempt counter
+    try:
+        attempt = int(r.get(login + "+attempt"))
+    except:
+        attempt = nattempts
+        r.setex(login + "+attempt", nattempts, ttl*10)
+
     try:
         tries = int(r.get(login + "+count"))
     except:
-        tries = ntries
+        if attempt > 0:
+            tries = int(ntries/attempt)
+        else:
+            tries = 0
+        if attempt > 0:
+            attempt -=1
+        r.setex(login + "+attempt", attempt, ttl*10)
         r.setex(login + "+count", ttl, tries)
 
     if incr != 0:
@@ -267,7 +283,7 @@ def makeguess():
                     if crush_check(login, crush):
                         crush_deltry(login, crush)
                         crush_addmutual(login, crush)
-                        crush_addmutual(crush,login)
+                        crush_addmutual(crush, login)
                         mokum_message(crush, "Your crush with @" + login + " is mutual!")
                         mokum_message(login, "You have a crush with @" + crush + ". Have a good time!")
                         guessorfail = "Yooohoo! You've mutual crush with  @" + crush + "!"
@@ -284,10 +300,9 @@ def makeguess():
             else:
                 guessorfail = crush + " doesn't exist on Mokum (may be  deleted?) , try someone else!"
 
+        tries = crush_tries(login)
 
-        tries=crush_tries(login)
-
-        if len(guessorfail)>0:
+        if len(guessorfail) > 0:
             flash(guessorfail)
         return render_template("main.html", login=login, num=crush_num(login), guess=guessorfail, tries=tries,
                                mutual=crush_mutual(login), sent=crush_sent(login))
