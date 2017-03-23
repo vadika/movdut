@@ -241,6 +241,7 @@ def crush_tries(login, incr=0):
         tries -= incr
         if tries < 0:
             tries = 0
+        r.setex(login + "+attempt", ttl * 10, attempt)
         r.setex(login + "+count", ttl, tries)
 
     return tries
