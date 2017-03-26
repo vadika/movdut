@@ -6,7 +6,22 @@
 
 {% block navbar %}
     <div class="navbar navbar-fixed-top">
-
+        <ul class="nav nav-pills">
+            <li role="presentation" class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown"
+                                                        role="button" aria-haspopup="true" aria-expanded="false">
+                Menu
+                <here></here>
+                <span class="caret"></span> </a>
+                <ul class="dropdown-menu">
+                    <li><a href="/">Play the game</a></li>
+                    <li><a href="/rulez">Game rules</a></li>
+                    <li><a href="#">Enable/disable notifications</a></li>
+                    <li><a href="#">Delete everything and run away</a></li>
+                    <li role="separator" class="divider"></li>
+                    <li><a href="/logout">Logout</a></li>
+                </ul>
+            </li>
+        </ul>
     </div>
 {% endblock %}
 
@@ -20,21 +35,16 @@
             <h3>Hi {{ login }}! </h3>
 
             <p>
-                Cooling down a bit :)<br><br>
-                I have made changes to the rules:<br>
-                Now you get 5 attempts for the first time, 2 attempts for the second time, and only one for the third
-                time. <br>
-                There is a 100k seconds (27 hours) timeout after you spend all attempts, so you have time to think and
-                make wise choices. <br>
-                After the third batch you won't get new attempts for about a month. <br>
-                Each time you get an incoming crush - you'll get one extra attempt to guess it. <br>
-                I plan to implement crush revocation soon, stay tuned! <br>
+                <small> <--- There is menu with rules on the left, and poking and revoking is now working.
+                </small>
+                <br>
+
             </p>
 
             <form action="/guessortry" method="post">
                 <div class="form-group">
                     <label for="inputbox">
-                        <p>Name your crush: put their username in the box below.<br>
+                        <p>Name your crush -  put their username in the box below.<br>
                             If you want to check if you have sent crush to the user, press the "Check!" button.
                         </p>
                     </label>
@@ -49,7 +59,7 @@
         </div>
         <div class="col-md-4">
             <p>
-                <strong>Your matched with:</strong>
+                <strong>You matched with:</strong>
             <ul class="list-unstyled">
                 {% for mutualnames in mutual %}
                     <li>{{ mutualnames }}</li>
@@ -61,7 +71,18 @@
                 <strong>You have a crush on:</strong>
             <ul class="list-unstyled">
                 {% for sentnames in sent %}
-                    <li>{{ sentnames }}</li>
+                    <li>
+                        <div class="btn-group">
+                            <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown"
+                                    aria-haspopup="true" aria-expanded="false">
+                                {{ sentnames }} <span class="caret"></span>
+                            </button>
+                            <ul class="dropdown-menu">
+                                <li><a href="crush/{{ sentnames }}/poke">Poke</a></li>
+                                <li><a href="crush/{{ sentnames }}/revoke">Revoke</a></li>
+                            </ul>
+                        </div>
+                    </li>
                 {% endfor %}
             </ul>
             </p>
@@ -97,18 +118,13 @@
                     <small>If you want to get notifications when somebody has a crush on you, or you have a match --
                         subscribe to <a href="https://mokum.place/barankas">@barankas</a>, the official movdut
                         masсot.<br>
-                        Technical support, complaints, ideas  - <a href="https://mokum.place/support/1119465">https://mokum.place/support/1119465</a>
+                        Technical support, complaints, ideas - <a href="https://mokum.place/support/1119465">https://mokum.place/support/1119465</a>
                     </small>
                 </p>
             </div>
         </div>
-        <div class="row">
-            <div class="col-md-8">
-                <hr>
-                <a href="/logout">log me out, please!</a>
-            </div>
-        </div>
     </div>
+
 {% endblock %}
 
 {% block head %}

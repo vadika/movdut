@@ -1,5 +1,5 @@
 from flask import Flask
-from flask import request, redirect, session, render_template, flash
+from flask import request, redirect, session, render_template, flash, url_for
 from flask_bootstrap import Bootstrap
 import hashlib
 import urllib
@@ -201,7 +201,7 @@ def crush_mutual(login):
     mutualcrushes = []
     try:
         for i in r.lrange(login + "+mutual", 0, -1):
-            mutualcrushes.append("@" + decrypt(i, login) + " ")
+            mutualcrushes.append("@" + decrypt(i, login))
     except:
         mutualcrushes = ["No one yet"]
     return mutualcrushes
@@ -211,7 +211,7 @@ def crush_sent(login):
     sentcrushes = []
     try:
         for i in r.lrange(login + "+tries", 0, -1):
-            sentcrushes.append("@" + decrypt(i, login) + " ")
+            sentcrushes.append("@" + decrypt(i, login))
     except:
         sentcrushes = ["no one :("]
     return sentcrushes
@@ -223,18 +223,18 @@ def crush_tries(login, incr=0):
         attempt = int(r.get(login + "+attempt"))
     except:
         attempt = 1
-        r.setex(login + "+attempt", 1 , ttl*10)
+        r.setex(login + "+attempt", 1, ttl * 10)
 
     try:
         tries = int(r.get(login + "+count"))
     except:
         if attempt > 0:
-            tries = int(ntries/attempt)
+            tries = int(ntries / attempt)
         else:
             tries = 0
         if attempt < nattempts:
-            attempt +=1
-        r.setex(login + "+attempt", ttl*10, attempt)
+            attempt += 1
+        r.setex(login + "+attempt", ttl * 10, attempt)
         r.setex(login + "+count", ttl, tries)
 
     if incr != 0:
@@ -249,10 +249,20 @@ def crush_tries(login, incr=0):
 
 @app.route('/')
 def process():
+    guessorfail=""
     if 'login' in session:
         login = session['login']
 
         tries = crush_tries(login)
+
+        if 'crushflash' in session:
+            guessorfail = session['crushflash']
+            print(session)
+            del session['crushflash']
+
+        if len(guessorfail) > 0:
+            flash(guessorfail)
+
 
         return render_template('main.html', login=login, num=crush_num(login), guess="", tries=tries,
                                mutual=crush_mutual(login), sent=crush_sent(login))
@@ -270,7 +280,7 @@ def makeguess():
         crush = crush.strip()
         if len(crush) > 0:
             if (request.form['submit'] == 'Check!'):
-                #print("check")
+                # print("check")
                 if (crush_stat(login, crush)):
                     guessorfail = "You have already sent your crush to @" + crush + " ."
                     crush_addtry(login, crush)
@@ -303,12 +313,34 @@ def makeguess():
 
         tries = crush_tries(login)
 
+        # if 'crushflash' in session:
+        #     guessorfail = session['crushflash']
+        #     print(session)
+        #     del session['crushflash']
+
         if len(guessorfail) > 0:
             flash(guessorfail)
         return render_template("main.html", login=login, num=crush_num(login), guess=guessorfail, tries=tries,
                                mutual=crush_mutual(login), sent=crush_sent(login))
     else:
         return render_template('login.html')
+
+
+@app.route('/crush/<name>/<action>')
+def crushmenu(name, action):
+    if 'login' in session:
+        login = session['login']
+
+        tries = crush_tries(login)
+        session['crushflash'] = name + " " + action
+
+        return redirect("/")
+    else:
+        return redirect("/signup")
+        #     return redirect(url_for('.process',  login=login, num=crush_num(login), guess="", tries=tries,
+        #                            mutual=crush_mutual(login), sent=crush_sent(login)))
+        # else:
+        #     return redirect(url_for('.signup'))
 
 
 @app.route('/signup', methods=['POST'])
@@ -328,6 +360,27 @@ def logout():
         del session['login']
     return redirect('/')
 
+
+@app.route('/rulez')
+def rulez():
+    guessorfail=""
+    if 'login' in session:
+        login = session['login']
+
+        tries = crush_tries(login)
+
+        if 'crushflash' in session:
+            guessorfail = session['crushflash']
+            print(session)
+            del session['crushflash']
+
+        if len(guessorfail) > 0:
+            flash(guessorfail)
+
+
+        return render_template('rulez.html', login=login )
+    else:
+        return render_template('login.html')
 
 if __name__ == '__main__':
     app.run()
