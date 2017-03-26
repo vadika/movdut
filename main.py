@@ -223,7 +223,7 @@ def crush_tries(login, incr=0):
         attempt = int(r.get(login + "+attempt"))
     except:
         attempt = 1
-        r.setex(login + "+attempt", 1, ttl * 10)
+        r.setex(login + "+attempt", ttl * 10, 1)
 
     try:
         tries = int(r.get(login + "+count"))
@@ -249,7 +249,7 @@ def crush_tries(login, incr=0):
 
 @app.route('/')
 def process():
-    guessorfail=""
+    guessorfail = ""
     if 'login' in session:
         login = session['login']
 
@@ -257,12 +257,11 @@ def process():
 
         if 'crushflash' in session:
             guessorfail = session['crushflash']
-            print(session)
+            # print(session)
             del session['crushflash']
 
         if len(guessorfail) > 0:
             flash(guessorfail)
-
 
         return render_template('main.html', login=login, num=crush_num(login), guess="", tries=tries,
                                mutual=crush_mutual(login), sent=crush_sent(login))
@@ -328,15 +327,43 @@ def makeguess():
 
 @app.route('/crush/<name>/<action>')
 def crushmenu(name, action):
+    message = ""
     if 'login' in session:
         login = session['login']
 
         tries = crush_tries(login)
-        session['crushflash'] = name + " " + action
+        name = name[1:]
+
+        if action == "poke":
+
+            try:
+                attempt = int(r.get(login + "+poke"))
+                message = "You have used your poke chance. Get back in a day or two"
+            except:
+                attempt = 1
+                mokum_message(name, "Hi! Anonymous mokum user sends you a spare try on movdut!:).")
+                crush_tries(name, -1)
+                r.setex(login + "+poke", ttl * 2, 1)
+                message = "You have poked @" + name + ". Good luck!"
+
+        elif action == "revoke":
+            try:
+                attempt = int(r.get(login + "+revoke"))
+                message = "You have already used your revoke right. Get back in a day or two"
+            except:
+                attempt = 1
+                crush_deltry(login, name)
+                crush_check(name, login)
+                crush_tries(login, -1)
+                r.setex(login + "+revoke", ttl * 2, 1)
+                message = "You have revoked attempt and have got extra try"
+
+        session['crushflash'] = message
 
         return redirect("/")
     else:
         return redirect("/signup")
+
         #     return redirect(url_for('.process',  login=login, num=crush_num(login), guess="", tries=tries,
         #                            mutual=crush_mutual(login), sent=crush_sent(login)))
         # else:
@@ -363,7 +390,7 @@ def logout():
 
 @app.route('/rulez')
 def rulez():
-    guessorfail=""
+    guessorfail = ""
     if 'login' in session:
         login = session['login']
 
@@ -371,16 +398,16 @@ def rulez():
 
         if 'crushflash' in session:
             guessorfail = session['crushflash']
-            print(session)
+            # print(session)
             del session['crushflash']
 
         if len(guessorfail) > 0:
             flash(guessorfail)
 
-
-        return render_template('rulez.html', login=login )
+        return render_template('rulez.html', login=login)
     else:
         return render_template('login.html')
+
 
 if __name__ == '__main__':
     app.run()
