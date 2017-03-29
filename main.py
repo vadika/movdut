@@ -298,6 +298,7 @@ def makeguess():
                         crush_deltry(crush, login)
                         crush_addmutual(login, crush)
                         crush_addmutual(crush, login)
+                        crush_tries(crush, -1)
                         mokum_message(crush, "Your crush with @" + login + " is mutual!")
                         mokum_message(login, "You have a crush with @" + crush + ". Have a good time!")
                         guessorfail = "Yooohoo! You've mutual crush with  @" + crush + "!"
