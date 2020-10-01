@@ -5,4 +5,4 @@ app:
   postapikey: xxxxx-xxxxx-xxxxx-xxxxx-xxxxx
 users:
   ntries: 5
-  timeout: 172800
+  timeout: 172600
